@@ -1,0 +1,27 @@
+#-------------------------------------------------------------------------------
+# Name:        module1
+# Purpose: 	   To move a file from one location to another.
+#
+# Author:      lallen
+#
+# Created:     01/10/2014
+# Copyright:   (c) Lee Allen 2014
+# 
+#-------------------------------------------------------------------------------
+
+import os
+import shutil
+import time
+##import tempfile
+
+filename1 = r"M:\CodeEnforcement\LocationTable.dbf"
+##filename1 = r"J:\Code Sevices\MyGovFiles\UpdatedFiles\log.txt"
+open (filename1, "r").close ()
+filename2 = r"J:\Code Sevices\MyGovFiles\LocationTable.dbf"
+print filename1, "=>", filename2
+
+shutil.copy (filename1, filename2)
+
+if os.path.isfile (filename2): print "Success"
+
+time.sleep(15)

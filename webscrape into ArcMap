@@ -1,0 +1,156 @@
+#SCRAPE THE APPRAISERS WEB SITE FOR COMPAREABLES AND ADD THEM TO GIS.
+#Written by Steve Atchison 3/22/2014 for SHAWNEE COUNTY.
+#Requires and ArcMap Project with a layer named 'Owners' with a field named 'PID'
+#that is in 16 digit format
+
+import urllib2
+import arcpy
+
+mxd = arcpy.mapping.MapDocument('CURRENT')
+df = arcpy.mapping.ListDataFrames(mxd)[0]
+
+def getsalesdate():
+    #get parcel number
+    parnum1=(the_page[int(startchar+5):int(startchar)+21])
+    print(parnum1)
+
+    #Actual sale price
+    saleprice=(the_page[int(startchar+88):int(startchar)+99])
+    print('Actual sales price = %s') % saleprice                    
+
+    #get sale date  
+    saledate=(the_page[int(startchar+63):int(startchar)+67])
+    print('Sale date = %s') % saledate
+
+    print('-------------------------------------------------')
+
+    for elm in arcpy.mapping.ListLayoutElements(mxd, "TEXT_ELEMENT"):
+        if elm.name == "PIN1":
+            elm.text = parnum1 + "  " + saleprice + "  " + saledate
+def getsalesdate1():
+    #get parcel number
+    parnum1=(the_page[int(startchar+5):int(startchar)+21])
+    print(parnum1)
+
+    #Actual sale price
+    saleprice=(the_page[int(startchar+88):int(startchar)+99])
+    print('Actual sales price = %s') % saleprice                    
+
+    #get sale date  
+    saledate=(the_page[int(startchar+63):int(startchar)+67])
+    print('Sale date = %s') % saledate
+
+    print('-------------------------------------------------')
+
+    for elm in arcpy.mapping.ListLayoutElements(mxd, "TEXT_ELEMENT"):
+        if elm.name == "PIN2":
+            elm.text = parnum1 + "  " + saleprice + "  " + saledate
+def getsalesdate2():
+    #get parcel number
+    parnum1=(the_page[int(startchar+5):int(startchar)+21])
+    print(parnum1)
+
+    #Actual sale price
+    saleprice=(the_page[int(startchar+88):int(startchar)+99])
+    print('Actual sales price = %s') % saleprice                    
+
+    #get sale date  
+    saledate=(the_page[int(startchar+63):int(startchar)+67])
+    print('Sale date = %s') % saledate
+
+    print('-------------------------------------------------')
+
+    for elm in arcpy.mapping.ListLayoutElements(mxd, "TEXT_ELEMENT"):
+        if elm.name == "PIN3":
+            elm.text = parnum1 + "  " + saleprice + "  " + saledate
+
+def getsalesdate3():
+    #get parcel number
+    parnum1=(the_page[int(startchar+5):int(startchar)+21])
+    print(parnum1)
+
+    #Actual sale price
+    saleprice=(the_page[int(startchar+88):int(startchar)+99])
+    print('Actual sales price = %s') % saleprice                    
+
+    #get sale date  
+    saledate=(the_page[int(startchar+63):int(startchar)+67])
+    print('Sale date = %s') % saledate
+
+    print('-------------------------------------------------')
+
+    for elm in arcpy.mapping.ListLayoutElements(mxd, "TEXT_ELEMENT"):
+        if elm.name == "PIN4":
+            elm.text = parnum1 + "  " + saleprice + "  " + saledate
+
+def getsalesdate4():
+    #get parcel number
+    parnum1=(the_page[int(startchar+5):int(startchar)+21])
+    print(parnum1)
+
+    #Actual sale price
+    saleprice=(the_page[int(startchar+88):int(startchar)+99])
+    print('Actual sales price = %s') % saleprice                    
+
+    #get sale date  
+    saledate=(the_page[int(startchar+63):int(startchar)+67])
+    print('Sale date = %s') % saledate
+
+    print('-------------------------------------------------')
+
+    for elm in arcpy.mapping.ListLayoutElements(mxd, "TEXT_ELEMENT"):
+        if elm.name == "PIN5":
+            elm.text = parnum1 + "  " + saleprice + "  " + saledate
+
+for row in arcpy.SearchCursor("Owners"):
+    parnum = row.getValue('PIN')
+
+    for elm in arcpy.mapping.ListLayoutElements(mxd, "TEXT_ELEMENT"):
+        if elm.name == "subject":
+            elm.text = parnum
+
+
+    req = urllib2.Request('http://www.snco.us/ap/R_prop/Comp.asp?PRCL_ID='+str(parnum)+'&PRCL_CD=01&YEAR=2015')#CHANGE THE YEAR TO CURRENT YEAR!
+    response = urllib2.urlopen(req)
+    the_page = response.read()
+
+    startchar = the_page.find('PID1=')
+    parnum1 =(the_page[int(startchar+5):int(startchar)+21])
+    getsalesdate()
+   
+    startchar = the_page.find('PID2=')
+    parnum2 =(the_page[int(startchar+5):int(startchar)+21])
+    getsalesdate1()
+
+    startchar = the_page.find('PID3=')
+    parnum3=(the_page[int(startchar+5):int(startchar)+21])
+    getsalesdate2()
+
+    startchar = the_page.find('PID4=')
+    parnum4=(the_page[int(startchar+5):int(startchar)+21])
+    getsalesdate3()
+
+    startchar = the_page.find('PID5=')
+    parnum5=(the_page[int(startchar+5):int(startchar)+21])
+    getsalesdate4()
+
+#arcpy.SelectLayerByAttribute_management("Owners","NEW_SELECTION","PID="+"'"+str(parnum)+"'")
+
+arcpy.SelectLayerByAttribute_management("Owners","ADD_TO_SELECTION","PID="+"'"+str(parnum1)+"'")
+
+arcpy.SelectLayerByAttribute_management("Owners","ADD_TO_SELECTION","PID="+"'"+str(parnum2)+"'")
+
+arcpy.SelectLayerByAttribute_management("Owners","ADD_TO_SELECTION","PID="+"'"+str(parnum3)+"'")
+
+arcpy.SelectLayerByAttribute_management("Owners","ADD_TO_SELECTION","PID="+"'"+str(parnum4)+"'")
+
+arcpy.SelectLayerByAttribute_management("Owners","ADD_TO_SELECTION","PID="+"'"+str(parnum5)+"'")
+
+arcpy.env.overwriteOutput = True #Allows program to overwrite data.
+
+#arcpy.CopyFeatures_management("Owners","clip_owners")
+
+df.zoomToSelectedFeatures() 
+#arcpy.RefreshActiveView()
+#Select a parcel from the Owner feature class before running this code!!
+#If the data is missing on the Appraisers Web page this code will return an error.

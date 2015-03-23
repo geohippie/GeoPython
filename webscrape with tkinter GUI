@@ -1,0 +1,92 @@
+#!/usr/bin/python
+ #Appraiser Data scraper example.
+ #Written by Steve Atchison for Shawnee County March 17 2015
+import urllib2
+from Tkinter import *
+ 
+def getwebhtml():
+     #This gets the html text from the appraiser webpage using the parcel number entered by user: assines it to the_page
+     pid = pinnum.get()
+     req = urllib2.Request('http://www.snco.us/ap/R_prop/Comp.asp?PRCL_ID='+str(pid)+'&PRCL_CD=01&YEAR=2015')
+     response = urllib2.urlopen(req)
+     the_page = response.read()
+ 
+     startchar = the_page.find('PID1=')
+     #compareable pin
+     comp1=(the_page[int(startchar):int(startchar)+21])
+     #saleprice
+     saleprice=(the_page[int(startchar+88):int(startchar)+99])  
+     #sale date
+     saledate=(the_page[int(startchar+63):int(startchar)+67])
+ 
+     txtbox.insert("1.0",comp1+'\n')
+     txtbox.insert("2.0",'Date: '+saledate+'\n')
+     txtbox.insert("3.0",'Sale price:'+saleprice+'\n\n')
+ 
+     startchar = the_page.find('PID2=')
+     #compareable pin
+     comp1=(the_page[int(startchar):int(startchar)+21])
+     #saleprice
+     saleprice=(the_page[int(startchar+88):int(startchar)+99])  
+     #sale date
+     saledate=(the_page[int(startchar+63):int(startchar)+67])
+    
+     txtbox.insert("1.0",comp1+'\n')
+     txtbox.insert("2.0",'Date: '+saledate+'\n')
+     txtbox.insert("3.0",'Sale price:'+saleprice+'\n\n')
+   
+     startchar = the_page.find('PID3=')
+ 
+    #compareable pin
+     comp1=(the_page[int(startchar):int(startchar)+21])
+     #saleprice
+     saleprice=(the_page[int(startchar+88):int(startchar)+99])  
+     #sale date
+     saledate=(the_page[int(startchar+63):int(startchar)+67])
+    
+     txtbox.insert("1.0",comp1+'\n')
+     txtbox.insert("2.0",'Date: '+saledate+'\n')
+     txtbox.insert("3.0",'Sale price:'+saleprice+'\n\n')
+ 
+     startchar = the_page.find('PID4=')
+     #compareable pin
+     comp1=(the_page[int(startchar):int(startchar)+21])
+     #saleprice
+     saleprice=(the_page[int(startchar+88):int(startchar)+99])  
+     #sale date
+     saledate=(the_page[int(startchar+63):int(startchar)+67])
+    
+     txtbox.insert("1.0",comp1+'\n')
+     txtbox.insert("2.0",'Date: '+saledate+'\n')
+     txtbox.insert("3.0",'Sale price:'+saleprice+'\n\n')
+ 
+     startchar = the_page.find('PID5=')
+     #compareable pin
+     comp1=(the_page[int(startchar):int(startchar)+21])
+     #saleprice
+     saleprice=(the_page[int(startchar+88):int(startchar)+99])  
+     #sale date
+     saledate=(the_page[int(startchar+63):int(startchar)+67])
+    
+     txtbox.insert("1.0",comp1+'\n')
+     txtbox.insert("2.0",'Date: '+saledate+'\n')
+     txtbox.insert("3.0",'Sale price:'+saleprice+'\n\n')
+ 
+def cleartext():
+    txtbox.delete("1.0",  END)
+    pinnum.delete(0,END)
+ 
+root = Tk()
+btn = Button(root, text = "Get Comparables", command = getwebhtml)
+btn.pack()
+
+btn2=Button(root, text="Clear", command=cleartext)
+btn2.pack()
+
+pinnum=Entry(root)
+pinnum.pack()
+
+txtbox = Text(root)
+txtbox.pack()
+
+root.mainloop()

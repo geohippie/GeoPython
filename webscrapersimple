@@ -1,0 +1,52 @@
+#!/usr/bin/python
+#Appraiser Data scraper
+#Written by Steve Atchison for Shawnee County March 17 2015
+import urllib2
+
+pid = raw_input('Enter parcel number: ')
+
+#This gets the html text from the appraiser webpage using the parcel number entered by user.
+req = urllib2.Request('http://www.snco.us/ap/R_prop/Comp.asp?PRCL_ID='+str(pid)+'&PRCL_CD=01&YEAR=2015')
+response = urllib2.urlopen(req)
+the_page = response.read()
+
+#erase all data in scrape_data.txt file
+f2=open("scrape_data.txt",'w')
+f2.close()
+
+def getmoredata(start):
+    #This function grabs sales and date from appraiser webpage and saves it to scrape_data.txt
+    
+    print('--------------------------------')
+    #Compare PIN
+    thepin=((the_page[int(start+5):int(start)+21]))
+    print(thepin)
+    #Actual sale price
+    saleprice=(the_page[int(start+88):int(start)+99])
+    print('Actual sales price = %s') % saleprice   
+    #sale date
+    saledate=(the_page[int(start+63):int(start)+67])
+    print('Sale date = %s') % saledate
+    
+    f2=open("scrape_data.txt",'a')
+    f2.write(thepin +'  ')
+    f2.write(saleprice +'  ')
+    f2.write(saledate + '\n')
+    f2.close()    
+    
+#Finds the begining point of each parcel number in the html file,
+#and then calls the getmoredata function
+startchar = the_page.find('PID1=')
+getmoredata(startchar)
+
+startchar = the_page.find('PID2=')
+getmoredata(startchar)
+
+startchar = the_page.find('PID3=')
+getmoredata(startchar)
+
+startchar = the_page.find('PID4=')
+getmoredata(startchar)
+
+startchar = the_page.find('PID5=')
+getmoredata(startchar)

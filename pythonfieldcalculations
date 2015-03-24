@@ -1,0 +1,94 @@
+#python for field calculations in ArcGIS field calculator
+#created to break apart addresses and return specific parts
+#need to add comments on what each one returns using the variables defined.
+
+
+d1 = '1301 NW lower silver lake rd'
+d2 = '1301 SW silver rd'
+d3 = '1301 SE lower silver rd'
+d4 = '1301 ranch road'
+city = ' Topeka, KS 66604'
+ownCity = 'TOPEKA, KS - 66603-3914'
+
+def stateR(pAddress2):
+    pAddress2S = pAddress2.split(',')
+    ST = pAddress2S[1]
+    return ST[1:3]
+
+def ownST(pAddress2):
+    pAddress2S = pAddress2.split(',')
+    ST = pAddress2S[1]
+    return ST[1:3]
+
+def zipR(pAddress2):
+    pAddress2S = pAddress2.split(',')
+    ST = pAddress2S[1]
+    return ST[5:10]
+
+def cityR(pAddress2):
+    pAddress2S = pAddress2.split(',')
+    cR = pAddress2S[0]
+    crCity = cR[1:]
+    return crCity
+
+def ownCity(pAddress2):
+    pAddress2S = pAddress2.split(',')
+    cR = pAddress2S[0]
+    return cR
+
+def aDir(pAddress):
+    pAddressS = pAddress.split(' ')
+    if pAddressS[1] == 'NW':
+        return pAddressS[1]
+    if pAddressS[1] == 'NE':
+        return pAddressS[1]
+    if pAddressS[1] == 'SW':
+        return pAddressS[1]
+    if pAddressS[1] == 'SE':
+        return pAddressS[1]
+    if pAddressS[1] == 'N':
+        return pAddressS[1]
+    if pAddressS[1] == 'S':
+        return pAddressS[1]
+    if pAddressS[1] == 'W':
+        return pAddressS[1]
+    if pAddressS[1] == 'E':
+        return pAddressS[1]
+    else:
+        return None
+
+def rdName(pAddress):
+    pAddressS = pAddress.split(' ')
+    road = " ".join(pAddressS[2:-1])
+    return road
+
+def addType(pAddress):
+    pAddressS = pAddress.split(' ')
+    typeRd = pAddressS[-1]
+    return typeRd
+
+#ownCity = 'TOPEKA, KS - 66603-3914'
+#ownST = ownCity[-15:-13]
+#print(ownST)
+
+ownCity = 'TOPEKA, KS - 66603'
+
+def stateR(pAddress2):
+    pAddress2S = pAddress2.split(',')
+    ST = pAddress2S[1]
+    return ST[1:3]
+
+def ownST(pAddress2):
+    pAddress2S = pAddress2.split(',')
+    ST = pAddress2S[1]
+    return ST[1:3]
+
+def ownZIP(pAddress2):
+    pAddress2S = pAddress2.split(',')
+    ST = pAddress2S[1]
+    return ST[6:11]
+
+def ownZIP4(pAddress2):
+    pAddress2S = pAddress2.split(',')
+    ST = pAddress2S[1]
+    return ST[12:]

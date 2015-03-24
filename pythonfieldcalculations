@@ -92,3 +92,14 @@ def ownZIP4(pAddress2):
     pAddress2S = pAddress2.split(',')
     ST = pAddress2S[1]
     return ST[12:]
+
+citywLot = '1620 SW Topeka LOT 0025'
+
+def makeLot(Address):
+    if Address.find('LOT') != -1:
+        Lot = Address.split('LOT')
+        LotNum = Lot[1]
+        return LotNum[1:]
+    else:
+        return None
+#returns '0025' from %citywLOT%

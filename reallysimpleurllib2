@@ -1,0 +1,11 @@
+import urllib2
+
+req = urllib2.Request('https://github.com/KDOTGIS/Transpy102/tree/master/NG911_KGTools/DataReview')
+#https://github.com/KDOTGIS/Transpy102/tree/master/NG911_KGTools/DataReview
+response = urllib2.urlopen(req)
+
+the_page = response.read()
+
+print the_page.count('KDOT')
+
+#prints '67'

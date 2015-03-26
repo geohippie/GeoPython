@@ -1,41 +1,34 @@
+#last revised 3/25/2015 by lee allen, shawnee county, ks
 #python for field calculations in ArcGIS field calculator
 #created to break apart addresses and return specific parts
 #need to add comments on what each one returns using the variables defined.
+#used this site as a starting point "http://socalgis.org/2013/12/05/field-calculator-i-just-want-the-third-word/"
 
+#and the functions are what goes in the code block. BE SURE TO PICK PYTHON RADIO BUTTON
 
+#the variables defined below would be representative of the field name you are using in field area
+#for the field named 'Address' in the data area of field calculator you specify: function(!Address!)
+# the argument names in the actual function do not matter
+
+#this code can be pasted directly into Python IDE to run
+#print statements are Python 2.7, use parentheses in 3.x
+
+# ########EXAMPLE VARIABLES################
 d1 = '1301 NW lower silver lake rd'
 d2 = '1301 SW silver rd'
 d3 = '1301 SE lower silver rd'
 d4 = '1301 ranch road'
-city = ' Topeka, KS 66604'
 ownCity = 'TOPEKA, KS - 66603-3914'
+citywLot = '1620 SW Topeka LOT 0025' #common in mobile home parks
+# ###########STREET NUMBER########################
+def stNumber(pAddress2):
+    pAddress2S = pAddress2.split(' ')
+    ST = pAddress2S[0]
+    return ST
 
-def stateR(pAddress2):
-    pAddress2S = pAddress2.split(',')
-    ST = pAddress2S[1]
-    return ST[1:3]
-
-def ownST(pAddress2):
-    pAddress2S = pAddress2.split(',')
-    ST = pAddress2S[1]
-    return ST[1:3]
-
-def zipR(pAddress2):
-    pAddress2S = pAddress2.split(',')
-    ST = pAddress2S[1]
-    return ST[5:10]
-
-def cityR(pAddress2):
-    pAddress2S = pAddress2.split(',')
-    cR = pAddress2S[0]
-    crCity = cR[1:]
-    return crCity
-
-def ownCity(pAddress2):
-    pAddress2S = pAddress2.split(',')
-    cR = pAddress2S[0]
-    return cR
-
+print stNumber(d1) #returns '1301'
+# #################STREET DIRECTION#####################
+#aDir is used to get street direction, if no street direction returns none
 def aDir(pAddress):
     pAddressS = pAddress.split(' ')
     if pAddressS[1] == 'NW':
@@ -56,50 +49,66 @@ def aDir(pAddress):
         return pAddressS[1]
     else:
         return None
-
+        
+print aDir(d1) #returns street direction 'NW'
+print aDir(d4) #returns None (which is nothing in the data)
+# ###################ROAD NAME###################
 def rdName(pAddress):
     pAddressS = pAddress.split(' ')
     road = " ".join(pAddressS[2:-1])
     return road
 
+print rdName(d1) #returns 'lower silver lake'
+print rdName(d2) #returns 'silver'
+print rdName(d3) #returns 'lower silver'
+print rdName(d4) #returns a space
+# ################ROAD TYPE I.E. RD, AVE, ETC######################
 def addType(pAddress):
     pAddressS = pAddress.split(' ')
     typeRd = pAddressS[-1]
     return typeRd
 
-#ownCity = 'TOPEKA, KS - 66603-3914'
-#ownST = ownCity[-15:-13]
-#print(ownST)
-
-ownCity = 'TOPEKA, KS - 66603'
-
+print addType(d1) #returns 'rd'
+print addType(d2) #returns 'rd'
+print addType(d3) #returns 'rd'
+print addType(d4) #returns 'rd'
+# ###############CITY#######################
+def cityR(pAddress2):
+    pAddress2S = pAddress2.split(',')
+    cR = pAddress2S[0]
+    crCity = cR[0:]
+    return crCity
+    
+print cityR(ownCity) # returns 'TOPEKA'
+# ############STATE##########################
 def stateR(pAddress2):
     pAddress2S = pAddress2.split(',')
     ST = pAddress2S[1]
     return ST[1:3]
 
-def ownST(pAddress2):
-    pAddress2S = pAddress2.split(',')
-    ST = pAddress2S[1]
-    return ST[1:3]
-
-def ownZIP(pAddress2):
+stateR(ownCity) #returns state of 'KS'
+# #############ZIP CODE#########################
+def zipR(pAddress2):
     pAddress2S = pAddress2.split(',')
     ST = pAddress2S[1]
     return ST[6:11]
 
+print zipR(ownCity) #returns Zip code '66603'
+# #############ZIP CODE +4 #########################
 def ownZIP4(pAddress2):
     pAddress2S = pAddress2.split(',')
     ST = pAddress2S[1]
     return ST[12:]
 
-citywLot = '1620 SW Topeka LOT 0025'
-
+print ownZIP4(ownCity) #returns '3914'
+# #################LOT(SPLIT EXAMPLE)#################################
 def makeLot(Address):
     if Address.find('LOT') != -1:
         Lot = Address.split('LOT')
         LotNum = Lot[1]
-        return LotNum[1:]
+        return str(int(LotNum[1:]))
     else:
         return None
-#returns '0025' from %citywLOT%
+
+print makeLot(citywLot) #returns '25' removes leading zeros
+# ######WHEW HAVE FUN!#############################

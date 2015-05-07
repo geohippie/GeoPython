@@ -1,0 +1,8 @@
+# When used from inside of a MXD this will list all layers and their data sources
+from arcpy import mapping
+
+mxd = mapping.MapDocument("CURRENT")
+
+for lyr in arcpy.mapping.ListLayers(mxd):
+    if lyr.supports("DATASOURCE"):
+        print "Layer: " + lyr.name + " Source: " + lyr.dataSource

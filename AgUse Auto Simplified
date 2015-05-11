@@ -1,0 +1,54 @@
+#-------------------------------------------------------------------------------
+# Name:        AguseToolWilsonCo\AgUse_Script.py
+# Purpose:	Runs the aguse tool for Wilson County, KS
+#
+# Author:      allenlee
+#
+# Created:     23/04/2015
+# Copyright:   (c) allenlee 2015
+# Licence:     <your licence>
+#-------------------------------------------------------------------------------
+
+#This script runs an agause report used for kansas property appraisal
+#It takes a Parcel layer and intersects it with a soils/aguse layer that is unioned
+
+#!!!!!!!SELECT PARCEL(S) FIRST!!!!! in Arcmap before running this tool or it runs for entire county.!!!!!!!!
+#the MXD needs the following layers named:
+#Parcels, AgUse, Soil, AG_Union, AG_Intersect. the layers names can be changed to match this or you can change the coded paths below
+
+#--------COPY FROM HERE DOWN INTO THE PYTHON WINDOW AND HIT ENTER TWICE-------------
+#TYPE runAguse() into the Python window - !SELECT PARCEL(S) FIRST!
+from arcpy import SelectLayerByLocation_management,Union_analysis,Intersect_analysis,AddField_management,mapping,CalculateField_management,env
+#overwrite output
+env.overwriteOutput = "True"
+
+#geoprocessing, report, and print all put into a function. this can then be called from the Python Window in Arcmap
+#comment out function to run processes all at once
+def runAguse():
+    mxd = arcpy.mapping.MapDocument("CURRENT") #sets map document to the one open
+    #REPLACE THE FILE PATH WITH THE PATH TO THE FILE YOU CREATE - make sure not to delete the "r" from the beginning of the path name
+    agUnion = r"\\myserver\myfolder\myfgdb.gdb\AG_Union" #change to reflect any polygon layer
+    #REPLACE THE FILE PATH WITH THE PATH TO THE FILE YOU CREATE - make sure not to delete the "r" from the beginning of the path name
+    agIntersect = r"\\myserver\myfolder\myfgdb.gdb\AG_Intersect" #change to reflect any polygon layer
+
+    print "Selecting AgUse Polys" #selects aguse polys that intersect the selected parcel(s)
+    arcpy.SelectLayerByLocation_management('AgUse',"INTERSECT","Parcels","","NEW_SELECTION")
+
+    print "Selecting Soils" #selects soil polys that intersect the selected parcel(s)
+    arcpy.SelectLayerByLocation_management('Soil',"INTERSECT","Parcels","","NEW_SELECTION")
+
+    print "Unionizing AgUse and Soils" #Unions aguse and soils together
+    arcpy.Union_analysis(in_features="AgUse #;Soil #",out_feature_class=agUnion,join_attributes="ALL",cluster_tolerance="#",gaps="GAPS")
+
+    print "Intersecting Polys" #intersects the union layer with the selected parcel
+    arcpy.Intersect_analysis(in_features="Parcels #;AG_Union #",out_feature_class=agIntersect,join_attributes="ALL",cluster_tolerance="#",output_type="INPUT")
+
+    print "Adding Acres field"#adds new acres field
+    arcpy.AddField_management(agIntersect, "Acres_Int", "DOUBLE", "", "", "", "", "NULLABLE", "NON_REQUIRED", "")
+
+    print "Calculating Acres" #calculates acres
+    arcpy.CalculateField_management("AG_Intersect", "Acres_Int", "!Shape.area@acres!", "PYTHON", "")
+
+    print "DONE! Run the Report"
+    # There is a .rlf ArcMap report file that I can make available to anyone who would like it, as well as step by step
+    # instructions on how to run it.

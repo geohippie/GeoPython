@@ -1,12 +1,11 @@
 #-------------------------------------------------------------------------------
-# Name:        AguseToolWilsonCo\AgUse_Script.py
-# Purpose:	Runs the aguse tool for Wilson County, KS
+# Name:        AgUse_Script.py
+# Purpose:	Runs the aguse process for just about any county in KS
 #
-# Author:      allenlee
+# Author:      Lee Allen
 #
 # Created:     23/04/2015
-# Copyright:   (c) allenlee 2015
-# Licence:     <your licence>
+# Copyright:   (c) Lee Allen 2015
 #-------------------------------------------------------------------------------
 
 #This script runs an agause report used for kansas property appraisal

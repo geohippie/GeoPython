@@ -17,6 +17,9 @@ d1 = '1301 NW lower silver lake rd'
 d2 = '1301 SW silver rd'
 d3 = '1301 SE lower silver rd'
 d4 = '1301 ranch road'
+d5 = '1301 sw lower silver lake rd #99'
+st1 = 'Topeka, KS - 66608-0089'
+st2 = 'Topeka KS - 66608'
 ownCity = 'TOPEKA, KS - 66603-3914'
 citywLot = '1620 SW Topeka LOT 0025' #common in mobile home parks
 # ###########STREET NUMBER########################
@@ -53,25 +56,37 @@ def aDir(pAddress):
 print aDir(d1) #returns street direction 'NW'
 print aDir(d4) #returns None (which is nothing in the data)
 # ###################ROAD NAME###################
+# updated 5/21/15 to accomodate if there are #999 etc at end of address
 def rdName(pAddress):
     pAddressS = pAddress.split(' ')
-    road = " ".join(pAddressS[2:-1])
-    return road
+    if '#' in pAddress:
+        road = " ".join(pAddressS[2:-2])
+        return road
+    else:
+        road2 = " ".join(pAddressS[2:-1])
+        return road2
 
 print rdName(d1) #returns 'lower silver lake'
 print rdName(d2) #returns 'silver'
 print rdName(d3) #returns 'lower silver'
 print rdName(d4) #returns a space
+print rdName(d5) #returns 'lower silver lake' 
 # ################ROAD TYPE I.E. RD, AVE, ETC######################
-def addType(pAddress):
+## updated 5/21/15 to accomodate if there are #999 etc at end of address
+def rdType(pAddress):
     pAddressS = pAddress.split(' ')
-    typeRd = pAddressS[-1]
-    return typeRd
+    if '#' in pAddress:
+        roadt = pAddressS[-2]
+        return roadt
+    else:
+        roadt2 = pAddressS[-1]
+        return roadt2
 
-print addType(d1) #returns 'rd'
-print addType(d2) #returns 'rd'
-print addType(d3) #returns 'rd'
-print addType(d4) #returns 'rd'
+print rdType(d1) #returns 'rd'
+print rdType(d2) #returns 'rd'
+print rdType(d3) #returns 'rd'
+print rdType(d4) #returns 'rd'
+print rdType(d5) #returns 'rd'
 # ###############CITY#######################
 def cityR(pAddress2):
     pAddress2S = pAddress2.split(',')
@@ -81,26 +96,38 @@ def cityR(pAddress2):
     
 print cityR(ownCity) # returns 'TOPEKA'
 # ############STATE##########################
-def stateR(pAddress2):
-    pAddress2S = pAddress2.split(',')
-    ST = pAddress2S[1]
-    return ST[1:3]
+# looks for a comma to calculate, if no comma, passes. take care of null values in data.
+def ownST(pAddress2):
+    if ',' in pAddress2:
+       pAddress2S = pAddress2.split(',')
+       ST = pAddress2S[1]
+       return ST[1:3]
+    else:
+      pass
 
-stateR(ownCity) #returns state of 'KS'
+ownST(st1) #returns state of 'KS'
 # #############ZIP CODE#########################
-def zipR(pAddress2):
-    pAddress2S = pAddress2.split(',')
-    ST = pAddress2S[1]
-    return ST[6:11]
+# looks for a comma to calculate, if no comma, passes. take care of null values in data.
+def ownZip(pAddress2):
+    if ',' in pAddress2:
+        pAddress2S = pAddress2.split(',')
+        ST = pAddress2S[1]
+        return ST[6:11]
+    else:
+        pass
 
-print zipR(ownCity) #returns Zip code '66603'
+print ownZip(st1) #returns Zip code '66603'
 # #############ZIP CODE +4 #########################
+# looks for a comma to calculate, if no comma, passes. take care of null values in data.
 def ownZIP4(pAddress2):
-    pAddress2S = pAddress2.split(',')
-    ST = pAddress2S[1]
-    return ST[12:]
+    if ',' in pAddress2:
+        pAddress2S = pAddress2.split(',')
+        ST = pAddress2S[1]
+        return ST[12:]
+    else:
+        pass
 
-print ownZIP4(ownCity) #returns '3914'
+print ownZIP4(st1) #returns '3914'
 # #################LOT(SPLIT EXAMPLE)#################################
 def makeLot(Address):
     if Address.find('LOT') != -1:

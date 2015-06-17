@@ -1,0 +1,190 @@
+#!usr/bin/env python
+from Tkinter import *
+import sqlite3
+import ctypes
+import csv
+import datetime
+
+#original code written by Steve Atchison 06/15/2015
+#modified by Lee Allen 06/17/2015
+# added an autoincrement column in db to be able to delete records
+# added function to export data to csv file
+# added scrollbar to text window
+# added message box before deleting rows
+
+def cleargui():
+    dateC.delete(0,END)
+    hours.delete(0,END)
+    notes.delete(0,END)
+    textwindow.delete("1.0",END)
+
+def connectdb(): #will create DB where script file is located
+    connect = sqlite3.connect("KidsEducationTracker.db")
+    cur = connect.cursor()
+    cur.execute("CREATE TABLE IF NOT EXISTS EducationTracker(RowID INTEGER PRIMARY KEY NOT NULL,DateE TEXT,Name TEXT, Subject TEXT,Hours REAL, Notes TEXT)")
+
+def addtodatabase():
+    connectdb()
+    #Get the data from the GUI
+    dateE=dateC.get()
+    name=variableName.get()
+    subject=variableSubject.get()
+    hoursE=hours.get()
+    notesE=notes.get()
+    #add data to the data base
+    connect = sqlite3.connect("KidsEducationTracker.db")
+    cur=connect.cursor()
+    cur.execute("INSERT INTO EducationTracker(DateE,Name,Subject,Hours,Notes) VALUES(?,?,?,?,?)",([dateE,name,subject,hoursE,notesE]))
+    connect.commit()
+    cleargui()
+    getdata()
+
+def getdata():#Display data in window
+    cleargui()
+
+    connect = sqlite3.connect("KidsEducationTracker.db")
+    cur=connect.cursor()
+    thedata = cur.execute("SELECT * FROM EducationTracker")
+    for row in thedata:
+        textwindow.insert("100.0",str(row[0]) + "   " + row[1]+ "   " + row[2] + "   " +row[3]+"       "+str(row[4])+ "      "+ row[5]+"\n")
+        #addlines()
+
+def deleterow():#Delete a row from database using RowID - message box may error on non-Windows PCs
+    confirm=ctypes.windll.user32.MessageBoxA(0, 'Do you really want to delete this?', 'Delete Record', 4)
+    if confirm == 6: # 6 is YES, 7 is NO
+
+        connect = sqlite3.connect("KidsEducationTracker.db")
+        RowIDD = deleteROW.get()
+        cur=connect.cursor()
+        cur.execute("DELETE FROM EducationTracker WHERE RowID = ?",([RowIDD]))
+        connect.commit()
+        cleargui()
+        getdata()
+    else: quit
+
+def findName():#Find data using name
+    cleargui()
+    findname=variableName.get()
+    connect = sqlite3.connect("KidsEducationTracker.db")
+    cur=connect.cursor()
+    therow=cur.execute("SELECT * FROM EducationTracker WHERE Name = ?",([findname]))
+
+    for row in therow:
+        textwindow.insert("100.0",str(row[0]) + "   " + row[1]+ "   " + row[2] + "   " +row[3]+"       "+str(row[4])+ "      "+ row[5]+"\n")
+
+def exportExcel(): #exports dbase field to CSV file
+    dateNow=str(datetime.datetime.now().date()) #used to add date to file name
+    fileName='EducationTracker' + dateNow + '.csv'
+    connect = sqlite3.connect("KidsEducationTracker.db")
+    cur=connect.cursor()
+    therow=cur.execute("SELECT * FROM EducationTracker")
+    with open(fileName,'wb') as f:
+        writer = csv.writer(f)
+        writer.writerow(['RowID','DateE','Name','Subject','Hours','Notes']) #explicitly list column names here
+        writer.writerows(therow)
+    textwindow.insert("0.0", "----------------------------------------------------------------------------------------- \n")
+    textwindow.insert("0.0","Data Exported to CSV file (EducationTracker[todaysdate].csv). Open with MS Excel \n" )
+
+root=Tk()
+root.title("Kids Education Tracker")
+root.config(bg='lightblue')
+root.resizable(width=FALSE,height=FALSE)
+
+#create frames
+frame1=Frame(root)
+frame1.pack()
+
+frame2=Frame(root)
+frame2.pack()
+
+frame3=Frame(root)
+frame3.pack()
+
+frame4=Frame(root)
+frame4.pack(anchor=NW)
+
+frame5=Frame(root)
+frame5.pack()
+
+datelabel=Label(frame1,text="Date:")
+datelabel.pack(side=LEFT)
+
+dateC=Entry(frame1,width=10,text="Date:")
+dateC.pack(side=LEFT,padx=5,pady=2)
+
+namelabel=Label(frame1,text='Name:')
+namelabel.pack(side=LEFT,padx=5,pady=2)
+
+variableName = StringVar(root)
+variableName.set("Leif") # default value
+name=OptionMenu(frame1,variableName,'Leif','Kai')
+name.pack(side=LEFT,padx=5,pady=2)
+
+variableSubject = StringVar(root)
+variableSubject.set("Science") # default value
+subjectlabel=Label(frame1,text='Subject:')
+subjectlabel.pack(side=LEFT,padx=5,pady=2)
+subject=OptionMenu(frame1,variableSubject,'Science','Math   ','History','Reading','Art    ','Music  ','PE     ','Other  ')
+subject.pack(side=LEFT,padx=5,pady=2)
+
+hourslabel=Label(frame1,text='Hours:')
+hourslabel.pack(side=LEFT,padx=5,pady=2)
+
+hours=Entry(frame1,text="Hours:")
+hours.pack(side=LEFT,padx=5,pady=2)
+
+notelabel=Label(frame3,text="Notes:")
+notelabel.pack(side=LEFT,padx=5,pady=3,anchor=NW)
+notes=Entry(frame3,text="Notes",width='100')
+notes.pack(side=LEFT,padx=5,pady=3,anchor=NW)
+
+FieldLabels=Label(frame4,bg='white', text="ID        DATE                    NAME          SUBJECT                HOURS           NOTES                                                                                                                                                                           ")
+FieldLabels.pack(side=LEFT,pady=1,anchor=NW)
+
+textFrame=Frame(root)
+textFrame.pack(anchor=NW)
+
+textwindow=Text(textFrame,width='110',height=35,background='white')
+scroll = Scrollbar(textFrame, command=textwindow.yview)
+textwindow.configure(yscrollcommand=scroll.set)
+textwindow.tag_add('text',1.0,20.0)
+textwindow.pack(side=LEFT, padx=5,pady=5,anchor=NW)
+scroll.pack(side=RIGHT, fill=Y)
+
+
+aframe=Frame(root, width=200)
+aframe.pack(anchor=NW)
+
+
+btn=Button(aframe,text='Add Record ',command=addtodatabase)
+btn.pack(padx=5,pady=5,side='left')
+
+btn2=Button(aframe,text="List All Records",command=getdata)
+btn2.pack(padx=5,pady=5,side='left')
+
+findbtn=Button(aframe,text='List by Name',command=findName)
+findbtn.pack(padx=5,pady=5,side='left')
+
+btn3=Button(aframe,text="Clear Window",command=cleargui)
+btn3.pack(padx=5,pady=5,side='left')
+
+
+
+exportbutton=Button(aframe,text="Export Data",command=exportExcel)
+exportbutton.pack(padx=5,pady=5,side='left')
+
+deleteFrame=LabelFrame(root,labelanchor='nw',text='Delete Records')
+deleteFrame.pack(anchor=NE)
+
+
+btn4=Button(deleteFrame,text='Delete Record',bg='red',command=deleterow)
+btn4.pack(padx=5,pady=5,side='left')
+
+deletelabel=Label(deleteFrame,text="ROW ID:")
+deletelabel.pack(side=LEFT)
+
+deleteROW=Entry(deleteFrame,width=10,text="ROW ID")
+deleteROW.pack(side=RIGHT,padx=5,pady=2)
+
+
+root.mainloop()

@@ -13,6 +13,7 @@ import datetime
 # added message box before deleting rows
 
 def cleargui():
+    deleteROW.delete(0,END)
     dateC.delete(0,END)
     hours.delete(0,END)
     notes.delete(0,END)

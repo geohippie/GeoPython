@@ -1,9 +1,10 @@
 #last revised 3/25/2015 by lee allen, shawnee county, ks
 #python for field calculations in ArcGIS field calculator
 #created to break apart addresses and return specific parts
+#also added function to autoid features
 #used this site as a starting point "http://socalgis.org/2013/12/05/field-calculator-i-just-want-the-third-word/"
 
-#and the functions are what goes in the code block. BE SURE TO PICK PYTHON RADIO BUTTON
+#and the functions are what goes in the code block. BE SURE TO PICK PYTHON RADIO BUTTON!
 
 #the variables defined below would be representative of the field name you are using in field area
 #for the GIS field named 'Address' in the data area of field calculator you specify: function(!Address!)

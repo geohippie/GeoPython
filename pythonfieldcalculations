@@ -9,9 +9,26 @@
 #for the GIS field named 'Address' in the data area of field calculator you specify: function(!Address!)
 # the argument names in the actual function do not matter
 
+
+# ### ADD code for auto increment found here: http://support.esri.com/fr/knowledgebase/techarticles/detail/38517 #oldiebutgoodie
+#puts them in Object id order, not in sorted order, need different script for that
+#codeblock Pre-Logic Script Code:
+rec=0 
+def autoIncrement(): 
+ global rec 
+ pStart = 1  #number to start with 1 or 101 etc.
+ pInterval = 1 
+ if (rec == 0):  
+  rec = pStart  
+ else:  
+  rec += pInterval  
+ return rec
+ 
+ 
+#Field = autoIncrement() 
+
 #this code can be pasted directly into Python IDE to run
 #print statements are Python 2.7, use parentheses in 3.x
-
 # ########EXAMPLE VARIABLES################
 d1 = '1301 NW lower silver lake rd'
 d2 = '1301 SW silver rd'

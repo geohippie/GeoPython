@@ -1,0 +1,23 @@
+#for use with a feature class that has a FACILITYID field poplated with numbers only
+
+#find the first and last FacilityID.
+#Change fc variable as needed to check different layers (name needs to be the same
+# as in the Table of Contents. Run from ArcMap Python Window
+#The script skips rows that are not numbers
+from arcpy import da
+
+fc = "wHydrants"
+FIDcursor = arcpy.da.SearchCursor(fc,"FACILITYID")
+faclist = []
+for row in FIDcursor:
+    FacID = row[0]
+    try:
+        facID = int(row[0])
+        faclist.append(facID)
+    except:
+        print 'FACILITYID ', facID,' is not a number'
+        pass
+
+faclist.sort()
+print "For feature class '", fc, "' the first Facility ID =", faclist[0],"the last FacilityID =",faclist[-1]
+# Result - For feature class ' wHydrants ' the first Facility ID = 1 the last FacilityID = 1000582

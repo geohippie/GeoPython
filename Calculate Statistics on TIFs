@@ -1,0 +1,41 @@
+#Original File from JD Overton - esri 2/19/15
+#Modified 9/20/16 by Lee Allen - Shawnee County, KS -- added file counting and status and single file testing code
+
+# Import arcpy module
+import arcpy
+
+arcpy.env.overwriteOutput = True
+arcpy.env.rasterStatistics = "STATISTICS 1 1"
+
+#TEST a single raster to make sure this will work - uncomment section below, highlight and run
+##raster = r"K:\Aerials\Photos_2016\SN_2016_TIFFS\0000-2050.tif" #path to single .tif file
+##print(raster)
+##print "Calculating stats..."
+##arcpy.CalculateStatistics_management(in_raster_dataset=raster,x_skip_factor="1",y_skip_factor="1",ignore_values="#",skip_existing="OVERWRITE",area_of_interest="Feature Set")
+##print "Setting Raster Properties..."
+##arcpy.SetRasterProperties_management(in_raster=raster,data_type="PROCESSED",statistics="#",stats_file="#",nodata="#")
+
+
+#Path to source imagery use mapped drive
+arcpy.env.workspace = r"K:\Aerials\Photos_2016\SN_2016_TIFFS\test"
+
+print "Running calculate_statistics.py \n"
+#count the number of .tif files to be processed
+print "Counting files, please wait..."
+countfiles = 0
+tiffiles = arcpy.ListRasters("*.tif", "TIF")
+
+for tifs in tiffiles:
+    countfiles = countfiles +1
+print "There are",countfiles,"files to be processed.\n"
+
+count = 0
+rasters = arcpy.ListRasters("*.tif", "TIF")
+for raster in rasters:
+    count = count +1 # to see which file is in process
+    print "Calculating statistics on",raster,"...  File",count,"of",countfiles #show progress
+    arcpy.CalculateStatistics_management(in_raster_dataset=raster,x_skip_factor="1",y_skip_factor="1",ignore_values="#",skip_existing="OVERWRITE",area_of_interest="Feature Set")
+    print "Setting Raster Properties for...",raster
+    arcpy.SetRasterProperties_management(in_raster=raster,data_type="PROCESSED",statistics="#",stats_file="#",nodata="#")
+
+print "----ALL FILES COMPLETED----"

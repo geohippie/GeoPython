@@ -1,0 +1,29 @@
+#-------------------------------------------------------------------------------
+# Name:        Combine PDFs
+# Purpose:
+#
+# Author:      Lee Allen
+#
+# Created:     08/02/2017
+
+
+# original code: http://stackoverflow.com/questions/22795091/how-to-append-pdf-pages-using-pypdf2
+#-------------------------------------------------------------------------------
+
+from PyPDF2 import PdfFileMerger, PdfFileReader
+import os, sys
+
+page2_3 = r'N:\Planning\FEMA_PropertyLetters\AnnualNoticePage2_3.pdf'
+path = r'N:\Planning\FEMA_PropertyLetters\2017letters'
+
+merger = PdfFileMerger()
+
+files = os.listdir(path)
+
+for filename in files:
+    filename = path + '\\' + filename
+    merger = PdfFileMerger()
+    merger.append(PdfFileReader(file(filename, 'rb')))
+    merger.append(PdfFileReader(file(page2_3, 'rb')))
+    newfile = str(filename)
+    merger.write(newfile)
